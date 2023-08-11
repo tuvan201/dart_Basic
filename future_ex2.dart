@@ -13,7 +13,7 @@ calculate(List<Product> arr){
   print("đã tính xong thể tích của mỗi sản phẩm");
 }
 
-sumV(List<Product> arr) async{
+Future sumV(List<Product> arr) async{
  Future.delayed(Duration(milliseconds: 10000),()
   {
     var sum= 0.0;
@@ -45,7 +45,4 @@ Future<void> main() async {
   await sumV(arr);
   calculate(arr);
 
-  
-
- 
 }
