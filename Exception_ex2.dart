@@ -31,11 +31,11 @@ void main(List<String> args) {
       print("a && b phai la so duong");
     }
     if(e is LessThanException){
-      print("a phai lon hon b");
+      print(e.expMsg());
     }
     if(e is NotIntegerException){
-      print("a va b phai la so nguyen");
-    }
+     print(e.expMsg());
+  }
   }
   finally{
     print("done");
