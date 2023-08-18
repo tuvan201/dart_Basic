@@ -1,0 +1,114 @@
+import 'dart:convert';
+import 'dart:io';
+
+class Student {
+  String name;
+  int age;
+  double weight;
+  double height;
+  double gpa;
+  String rank='';
+
+  Student({required this.name, required this.age, required this.weight, required this.height, required this.gpa});
+
+  double calculateBMI() {
+    if (weight <= 0 || height <= 0) {
+      return double.nan;
+    }
+    return weight / ((height / 100) * (height / 100));
+  }
+
+  void calculateRank() {
+    if (gpa >= 8.5) {
+      rank = 'A';
+    } else if (gpa >= 7.5) {
+      rank = 'B';
+    } else if (gpa >= 6.5) {
+      rank = 'C';
+    } else {
+      rank = 'D';
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'age': age,
+      'weight': weight,
+      'height': height,
+      'gpa': gpa,
+    };
+  }
+
+  factory Student.fromJSON(Map<String, dynamic> json) {
+    try {
+      String name = json['name'];
+      int age = json['age'];
+      double weight = json['weight'];
+      double height = json['height'];
+      double gpa = json['gpa'];
+
+      return Student(name: name, age: age, weight: weight, height: height, gpa: gpa);
+    } catch (e) {
+      throw FormatException('Invalid JSON format');
+    }
+  }
+}
+
+void main() {
+  // a) Yêu cầu người dùng nhập thông tin của học sinh
+  print('Ten nguoi:');
+  String name = stdin.readLineSync()!;
+
+  print('Tuoi:');
+  int age = int.parse(stdin.readLineSync()!);
+
+  print('Can nang:');
+  double weight = double.parse(stdin.readLineSync()!);
+
+  print('Chieu cao:');
+  double height = double.parse(stdin.readLineSync()!);
+
+  print('Diem tong ket:');
+  double gpa = double.parse(stdin.readLineSync()!);
+
+  // a) In ra chỉ số BMI của học sinh
+  Student student = Student(name: name,
+      age: age,
+      weight: weight,
+      height: height,
+      gpa: gpa);
+  double bmi = student.calculateBMI();
+  print('Chi so BMI: $bmi');
+
+  // b) In ra xếp hạng của học sinh
+  student.calculateRank();
+  print('Xep hang: ${student.rank}');
+
+  // c) In ra xâu JSON của học sinh
+  String jsonStr = jsonEncode(student.toJson());
+  print('Xau JSON: $jsonStr');
+
+  // d) Yêu cầu người dùng nhập vào xâu JSON của học sinh
+  print('Xau JSON can nhap:');
+  String jsonInput = stdin.readLineSync()!;
+
+  // d) Chuyển xâu JSON thành đối tượng Student và in ra chỉ số BMI và xếp hạng
+  try {
+    Map<String, dynamic> json = jsonDecode(jsonInput);
+    Student studentFromJSON = Student.fromJSON(json);
+    double bmiFromJSON = studentFromJSON.calculateBMI();
+    if (bmiFromJSON.isNaN) {
+      print('Invalid');
+      return;
+    }
+    studentFromJSON.calculateRank();
+    print('BMI: $bmiFromJSON');
+    print('Xep hang: ${studentFromJSON.rank}');
+  } catch (e) {
+    print('Invalid');
+  }
+  finally {
+    print("done");
+  }
+}
